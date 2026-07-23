@@ -121,5 +121,6 @@ r_device const ft1211r = {
         .sync_width  = 0,
         .reset_limit = 8800,
         .decode_fn   = &ft1211r,
+        .disabled    = 0, // disabled and hidden, use 0 if there is a MIC, 1 otherwise
         .fields      = output_fields,
 };
