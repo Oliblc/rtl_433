@@ -112,7 +112,7 @@ static char const *const output_fields[] = {
         NULL,
 };
 
-r_device const universalfanctrl = {
+r_device const ft1211r = {
         .name        = "FT1211R remote",
         .modulation  = OOK_PULSE_PWM,
         .short_width = 256,
