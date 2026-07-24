@@ -16,11 +16,11 @@
 Decoder for 'FT1211R remote'.
 
 The device uses PWM encoding,
-- 0 is encoded as 924 us pulse and 252 us gap,
-- 1 is encoded as 312 us pulse and 756 us gap.
+- 0 is encoded as 924 us pulse and 292 us gap,
+- 1 is encoded as 312 us pulse and 908 us gap.
 
-A transmission starts with a pulse of 0 us,
-there a 5 repeated packets, each with a 5812 us gap.
+A transmission starts with a pulse of 328 us,
+there a 5 repeated packets, each with a 6124 us gap.
 
 Data layout:
     AAAAAAAAAAAAAAAAAAAABBBB8
@@ -29,10 +29,15 @@ Data layout:
 - B: 4-bit buttoncode
 - 8: Always 8
 
-Example:
-		rtl_433 -R 0 -X 'n=name,m=OOK_PWM,s=312,l=924,r=5808,g=920,t=245,y=0,match={20}0xb678f,rows=6,
-		get=address:@0:{20};%x,get=command:@20:{4},get=msgcount:@24:{4}:%d,unique'
+view at https://triq.org/pdv/#AAB00B04010134039016AC27148255+AAB02304040134039016AC27148190818190818190908181818190909081818181818190818255+AAB02304010134039016AC27148190818190818190908181818190909081818181818190818355
+Attempting demodulation... short_width: 312, long_width: 928, reset_limit: 5812, sync_width: 0
+Use a flex decoder with -X 'n=name,m=OOK_PWM,s=312,l=928,r=5812,g=920,t=246,y=0'
+[pulse_slicer_pwm] Analyzer Device
+codes     : {1}8, {25}b678fd8, {25}b678fd8, {25}b678fd8, {25}b678fd8, {25}b678fd8
 
+Example:
+		rtl_433 -R 0 -X 'n=ft1211r,m=OOK_PWM,s=312,l=928,r=5812,g=920,t=246,y=0,match={20}0xb678f,rows=6,
+		get=address:@0:{20};%x,get=command:@20:{4},get=msgcount:@24:{4}:%d,unique'
 */
 
 static int ft1211r_decode(r_device *decoder, bitbuffer_t *bitbuffer)
@@ -115,11 +120,11 @@ static char const *const output_fields[] = {
 r_device const ft1211r = {
         .name        = "FT1211R remote",
         .modulation  = OOK_PULSE_PWM,
-        .short_width = 256,
-        .long_width  = 756,
-        .gap_limit   = 5812,
+        .short_width = 312,
+        .long_width  = 928,
+        .gap_limit   = 920,
         .sync_width  = 0,
-        .reset_limit = 8800,
+        .reset_limit = 5812,
         .decode_fn   = &ft1211r_decode,
         .disabled    = 0, // disabled and hidden, use 0 if there is a MIC, 1 otherwise
         .fields      = output_fields,
