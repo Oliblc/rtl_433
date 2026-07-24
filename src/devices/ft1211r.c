@@ -1,4 +1,4 @@
-/** @file
+
     Decoder for 'FT1211R remote'.
 
     Copyright (C) 2026 Olivier Blanc
