@@ -47,11 +47,18 @@ static int ft1211r_decode(r_device *decoder, bitbuffer_t *bitbuffer)
         return DECODE_ABORT_LENGTH;
     }
 
-    uint8_t *b  = bitbuffer->bb[row];
+     uint8_t const preamble[] = {
+            0xb6, 0x78, 0xf      // preamble
+    };
 
-    if (b[0] != 0xb678f) {
-        return DECODE_ABORT_EARLY; // Messages start of 0xAA not found
+    // Validate message and reject it as fast as possible : check for preamble
+    unsigned start_pos = bitbuffer_search(bitbuffer, row, 0, preamble, sizeof(preamble) * 5);
+
+    if (start_pos == bitbuffer->bits_per_row[row]) {
+        return DECODE_ABORT_EARLY; // no preamble detected
     }
+
+	uint8_t *b  = bitbuffer->bb[row];
 
     int address = (b[0] << 16) + (b[1] << 12) + (b[2] << 8) + (b[3] << 4) + b[4];    // @0 {20};
     int button  = b[5]; // @20 {4}
