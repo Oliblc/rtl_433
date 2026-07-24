@@ -1,5 +1,5 @@
 
-    Decoder for 'FT1211R remote'.
+    Decoder for 'FT1211R fan controller'.
 
     Copyright (C) 2026 Olivier Blanc
 
@@ -13,7 +13,11 @@
 #include "decoder.h"
 
 /**
-Decoder for 'FT1211R remote'.
+Decoder for 'FT1211R fan controller'.
+
+https://fccid.io/2ABUP-FT1211R
+
+Used for Sulion fan
 
 The device uses PWM encoding,
 - 0 is encoded as 924 us pulse and 292 us gap,
@@ -129,7 +133,7 @@ static char const *const output_fields[] = {
 };
 
 r_device const ft1211r = {
-        .name        = "FT1211R remote",
+        .name        = "FT1211R fan controller",
         .modulation  = OOK_PULSE_PWM,
         .short_width = 312,
         .long_width  = 928,
