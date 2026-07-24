@@ -35,7 +35,7 @@ Example:
 
 */
 
-static int ft1211r(r_device *decoder, bitbuffer_t *bitbuffer)
+static int ft1211r_decode(r_device *decoder, bitbuffer_t *bitbuffer)
 {
     int row = bitbuffer_find_repeated_row(bitbuffer, 5, 28);
     if (row < 0) {
@@ -120,7 +120,7 @@ r_device const ft1211r = {
         .gap_limit   = 5812,
         .sync_width  = 0,
         .reset_limit = 8800,
-        .decode_fn   = &ft1211r,
+        .decode_fn   = &ft1211r_decode,
         .disabled    = 0, // disabled and hidden, use 0 if there is a MIC, 1 otherwise
         .fields      = output_fields,
 };
