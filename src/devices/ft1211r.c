@@ -42,11 +42,14 @@ Example:
 
 static int ft1211r_decode(r_device *decoder, bitbuffer_t *bitbuffer)
 {
-    int row = bitbuffer_find_repeated_row(bitbuffer, 5, 28);
-    if (row < 0) {
+
+    if(bitbuffer->num_rows != 6)
+        return DECODE_ABORT_LENGTH;
+
+    int row = bitbuffer_find_repeated_row(bitbuffer, 3, 25);
+    if (row < 0 || bitbuffer->bits_per_row[row] > 28 + 16) {
         return DECODE_ABORT_LENGTH;
     }
-
      uint8_t const preamble[] = {
             0xb6, 0x78, 0xf      // preamble
     };
@@ -58,10 +61,10 @@ static int ft1211r_decode(r_device *decoder, bitbuffer_t *bitbuffer)
         return DECODE_ABORT_EARLY; // no preamble detected
     }
 
-	uint8_t *b  = bitbuffer->bb[row];
+    uint8_t *b  = bitbuffer->bb[row];
 
-    int address = (b[0] << 16) + (b[1] << 12) + (b[2] << 8) + (b[3] << 4) + b[4];    // @0 {20};
-    int button  = b[5]; // @20 {4}
+    int address = (b[0] << 12) + (b[1] << 4) + (b[2] >> 4);    // @0 {20};
+   int button  = b[2] & 0x0f; // @20 {4}
     char const *button_str;
 
     switch (button) {
@@ -102,6 +105,7 @@ static int ft1211r_decode(r_device *decoder, bitbuffer_t *bitbuffer)
         button_str = "Unknown";
         break;
     }
+        decoder_log(decoder, 1, __func__, "fin");
 
     /* clang-format off */
     data_t *data = data_make(

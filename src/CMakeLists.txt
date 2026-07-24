@@ -163,6 +163,7 @@ add_library(r_433 STATIC
     devices/fs20.c
     devices/fsl_scoreboard.c
     devices/ft004b.c
+    devices/ft1211r.c
     devices/funkbus.c
     devices/gasmate_ba1008.c
     devices/ge_coloreffects.c
